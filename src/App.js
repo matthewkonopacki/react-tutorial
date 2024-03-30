@@ -77,11 +77,14 @@ export default function Game() {
       description = "Go to game start";
     }
 
-    return (
-      <li key={move}>
+    const buttonOrMessage =
+      move < history.length - 1 ? (
         <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
+      ) : (
+        <div>{`You are at move #${move}`}</div>
+      );
+
+    return <li key={move}>{buttonOrMessage}</li>;
   });
 
   return (
