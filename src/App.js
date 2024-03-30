@@ -8,6 +8,42 @@ function Square({ value, onSquareClick }) {
   );
 }
 
+function BoardRow({ squares, rowIndex, handleClick }) {
+  const spaceArray = [];
+
+  for (let i = 0; i < 3; i++) {
+    const squareNumber = rowIndex * 3 + i;
+
+    spaceArray.push(
+      <Square
+        value={squares[i]}
+        onSquareClick={() => handleClick(squareNumber)}
+        key={squareNumber}
+      />,
+    );
+  }
+  return spaceArray;
+}
+
+function BoardGrid({ boardSquares, handleClick }) {
+  const rowArray = [];
+
+  for (let i = 0; i < 3; i++) {
+    const rowStartingSquare = i * 3;
+    rowArray.push(
+      <div key={i}>
+        <BoardRow
+          squares={boardSquares.slice(rowStartingSquare, rowStartingSquare + 3)}
+          rowIndex={i}
+          handleClick={handleClick}
+        />
+      </div>,
+    );
+  }
+
+  return rowArray;
+}
+
 export function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
@@ -34,21 +70,7 @@ export function Board({ xIsNext, squares, onPlay }) {
   return (
     <>
       <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
+      <BoardGrid boardSquares={squares} handleClick={handleClick} />
     </>
   );
 }
