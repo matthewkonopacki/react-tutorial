@@ -72,7 +72,7 @@ function MoveList({ jumpTo, history, rowAndColumn }) {
       move < history.length - 1 ? (
         <button onClick={() => jumpTo(move)}>{description}</button>
       ) : (
-        <div>{`You are at move #${move}`}</div>
+        <div>{`You are at move #${move + 1}`}</div>
       );
 
     return <li key={move}>{buttonOrMessage}</li>;
@@ -97,7 +97,13 @@ function MoveList({ jumpTo, history, rowAndColumn }) {
   );
 }
 
-export function Board({ xIsNext, squares, onPlay, valueCallback }) {
+export function Board({
+  currentMove,
+  xIsNext,
+  squares,
+  onPlay,
+  valueCallback,
+}) {
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
       return;
@@ -116,6 +122,8 @@ export function Board({ xIsNext, squares, onPlay, valueCallback }) {
   let status;
   if (winner) {
     status = "Winner: " + winner;
+  } else if (winner == null && currentMove === 9) {
+    status = "It's a draw.";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -146,6 +154,7 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
+    setHistory([...history].slice(0, nextMove + 1));
     setCurrentMove(nextMove);
     setRowAndColumn(rowAndColumn.slice(0, nextMove));
   }
@@ -164,6 +173,7 @@ export default function Game() {
     <div className="game">
       <div className="game-board">
         <Board
+          currentMove={currentMove}
           xIsNext={xIsNext}
           squares={currentSquares}
           onPlay={handlePlay}
